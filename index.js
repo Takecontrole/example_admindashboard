@@ -44,14 +44,20 @@ app.use("/management", managementRoutes);
 app.use("/sales", salesRoutes);
 
 /* MONGOOSE SETUP */
-const PORT = process.env.PORT || 9000;
-mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+const connectionStr = "mongodb+srv://Afro:5774@cluster0.fm3uoez.mongodb.net/admindashboard?retryWrites=true&w=majority";
+
+mongoose.connect(connectionStr, {useNewUrlparser: true})
+.then(() => console.log('connected to mongodb'))
+.catch(err => console.log(err))
+
+mongoose.connection.on('error', err => {
+  console.log(err)
+})
+
+const port = process.env.PORT || 8080
+app.listen(port, ()=> {
+  console.log('server running at port', port)
+})
 
     /* ONLY ADD DATA ONE TIME 
      ProductStat.insertMany(dataProductStat);
@@ -61,5 +67,3 @@ mongoose
     Transaction.insertMany(dataTransaction);
     User.insertMany(dataUser);
   */
-  })
-  .catch((error) => console.log(`${error} did not connect`));
